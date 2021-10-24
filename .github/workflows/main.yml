@@ -18,6 +18,6 @@ jobs:
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
           --data '{
-            "title": "Issue created due to workflow fialure: ${{ github.run_id }}",
+            "title": "Issue created due to workflow failure: ${{ github.run_id }}",
             "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n due to failure in run: _${{ github.run_id }}_."
           }'
