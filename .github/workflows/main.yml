@@ -1,30 +1,31 @@
-# This is a basic workflow to help you get started with Actions
 name: VariableDemo
 
-env:
-  user_name: "Piyush"
-  demo_name: "Variable Demo"
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the main branch
-
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  VariableUsageJob:
+  FailJobIssueDemo:
     runs-on: ubuntu-latest
-    env:
-      job_var1: "job variable value"
     steps:
-      - name: Using Workflow Variables
-        run: echo Hello, $user_name!
-          Welcome to $demo_name!!!
-          here is job var1 $job_var1
-          here is step var1 $step_var1
-        env:
-          step_var1: "Step Variable Value"
+      - name: Step is going to pass
+        run: echo Passing step
+      - name: Step is going to fail
+        run: exit 1
+      - name: Step To run on failure
+        if: ${{ failure() }}
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.
+          repository }}/issues \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_
+          TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "title": "Issue created due to workflow fialure:
+            ${{ github.run_id }}",
+          "body": "This issue was automatically created by
+            the GitHub Action workflow **${{ github.workflow
+            }}**. \n\n due to failure in run: _${{ github.run_
+            id }}_."
+          }'
