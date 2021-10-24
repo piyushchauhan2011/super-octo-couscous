@@ -1,12 +1,16 @@
 name: Node.js CI
 
-on: [workflow_dispatch]
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: PRODUCTION
     steps:
       - uses: actions/checkout@v2
+
+      - name: Environment Vars
+        run: echo $VAR_1
 
       - name: Cache node modules
         uses: actions/cache@v2
