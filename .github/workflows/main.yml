@@ -1,30 +1,31 @@
-# This is a basic workflow to help you get started with Actions
-name: VariableDemo
+name: Node.js CI
 
-env:
-  user_name: "Piyush"
-  demo_name: "Variable Demo"
+on: [workflow_dispatch]
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the main branch
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  VariableUsageJob:
+  build:
     runs-on: ubuntu-latest
-    env:
-      job_var1: "job variable value"
     steps:
-      - name: Using Workflow Variables
-        run: echo Hello, $user_name!
-          Welcome to $demo_name!!!
-          here is job var1 $job_var1
-          here is step var1 $step_var1
+      - uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
         env:
-          step_var1: "Step Variable Value"
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test:ci
